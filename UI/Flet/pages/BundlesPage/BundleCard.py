@@ -1,7 +1,8 @@
 import flet as ft
-from DATA.commands import delete_bundle, Delete_Args, get_bundle, Get_Bundle_Args
+from DATA.commands import delete_bundle, Delete_Args, get_bundle, Get_Bundle_Args, export_bundle, Export_Bundle_Args
 import threading
 from store import set_bundles
+from components.Toast import Toast
 
 
 class DeleteConfirmation(ft.UserControl):
@@ -41,8 +42,11 @@ class DeleteConfirmation(ft.UserControl):
 class BundleCard(ft.UserControl):
 
     def __init__(self, bundle_info):
-        self.bundle_info = bundle_info
         super().__init__()
+        self.bundle_info = bundle_info
+        def export_handler(result):
+            print(result.path, self.bundle_info["id"])
+        self.export_handdler = export_handler
 
     def did_mount(self):
         self.is_mounted = True
@@ -51,21 +55,40 @@ class BundleCard(ft.UserControl):
         self.is_mounted = False
 
     def on_delete(self):
+        self.delte_confirmation_modal.close_dialog()
         self.delete_th = threading.Thread(
             target=self.delete, args=(), daemon=True)
         self.delete_th.start()
+
 
     def delete(self):
         if self.is_mounted:
             data = delete_bundle(Delete_Args(self.bundle_info["id"]))
             if data["status"] == "success":
                 bundles = get_bundle(Get_Bundle_Args(all=True))
-                self.delte_confirmation_modal.close_dialog()
                 set_bundles(bundles)
             else: 
-                self.delte_confirmation_modal.close_dialog()
+                pass        
+    
+    def on_export(self, result):
+        print(result.path, self.bundle_info["id"])
+
+    def on_export(self, result):
+        if result is not None:
+            self.import_th = threading.Thread(
+                target=self.export_bundle, args=(result.path,), daemon=True)
+            self.import_th.start()
+
+    def export_bundle(self, filePath):
+        data = export_bundle(Export_Bundle_Args(filePath, self.bundle_info["id"]))
+        if data["status"] == "success":
+            self.toast.open("Bundle exported successfuly!")
 
     def build(self):
+
+        self.toast = Toast()
+
+        self.export_picker = ft.FilePicker(on_result=self.on_export)
 
         self.title_box = ft.Container(ft.Text(f'{self.bundle_info["title"]}', size=20))
         self.description_box = ft.Container(ft.Text(f'Description: {self.bundle_info["description"]}'))
@@ -78,6 +101,9 @@ class BundleCard(ft.UserControl):
 
         self.action_buttons = ft.Container(
             ft.Row(controls=[
+                ft.IconButton(icon=ft.icons.SCREEN_SHARE
+                               ,on_click=lambda e: self.export_picker.save_file()
+                            ),
                 ft.IconButton(icon=ft.icons.EDIT),
                 ft.IconButton(icon=ft.icons.CONTROL_POINT_DUPLICATE),
                 ft.IconButton(icon=ft.icons.DELETE, on_click=lambda e: self.delte_confirmation_modal.open_dialog()),
@@ -92,7 +118,7 @@ class BundleCard(ft.UserControl):
 
         self.content = ft.Column(
             controls=[
-                self.title_box,
+                ft.Row([self.title_box, self.export_picker, self.toast]),
                 ft.Divider(color=ft.colors.PRIMARY, height=4),
                 ft.ListView(controls = [
                         self.description_box,

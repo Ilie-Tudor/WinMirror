@@ -3,6 +3,7 @@ from store import get_bundles, observe_bundles, observe
 from DATA.commands import add_application_to_bundle, Add_Application_To_Bundle_Args
 import threading
 from api import Global_Data_Fetching
+from components.Toast import Toast
 
 class ApplicationExporter(ft.UserControl):
     def __init__(self, application_list_state_name):
@@ -61,13 +62,15 @@ class ApplicationExporter(ft.UserControl):
                 app_content
                 ))
             if(data["status"]=="success"):
-                print("a mers")
+                self.toast.open("Apps added to bunddle!")
             else:
-                print(data["message"])
+                self.toast.open(data["message"], variant="error")
         Global_Data_Fetching.get_bundles()
 
 
     def build(self):
+
+        self.toast = Toast()
 
         self.submit_button = ft.IconButton(ft.icons.CHECK, bgcolor=ft.colors.ON_SECONDARY, disabled=True, on_click=lambda e: self.on_submit())
         
@@ -84,6 +87,6 @@ class ApplicationExporter(ft.UserControl):
         )
 
         return ft.Container(
-            ft.Row([self.drop_down, self.submit_button]),
+            ft.Row([self.toast, self.drop_down, self.submit_button]),
             margin=ft.margin.only(top=15)
         )

@@ -406,7 +406,7 @@ def import_bundle(args):
         with open(args.file, "r") as file:
             bundle = json.loads(file.read())
             file.close()
-            return create_bundle(Create_Bundle_Args(bundle["title"], bundle["apps"]))
+            return create_bundle(Create_Bundle_Args(bundle["title"], bundle["description"], bundle["apps"]))
 
 class Import_Bundle_Args:
     def __init__(self, file) -> None:
