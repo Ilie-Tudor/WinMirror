@@ -1,7 +1,4 @@
 import flet as ft
-from DATA.commands import get_search_output, search, Search_Args, get_list_output, list_installed, List_Args, show, get_show_output, Show_Args
-import threading
-import copy
 
 from components.SearchBox import SearchBox
 from components.ApplicationListItem import ApplicationListItem

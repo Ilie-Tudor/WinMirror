@@ -1,31 +1,38 @@
 import flet as ft
-from store import router_model
-from mopyx import model, render, render_call, action
-from DATA.commands import get_search_output, search, Search_Args, get_list_output, list_installed, List_Args, show, get_show_output, Show_Args
+from store import route_to, ROUTES, observe_route
+
+
 
 from pages.ApplicationsPage.ApplicationsPage import ApplicationsPage
 from pages.SettingsPage.SettingsPage import SettingsPage
+from pages.BundlesPage.BundlesPage import BundlesPage
+from api import Global_Data_Fetching
+
+
 
 
 class NavDrawer(ft.UserControl):
 
     def on_change_handler(self, e):
         if (e.control.selected_index == 0):
-            router_model.active_route = router_model.HOME_ROUTE
+            route_to(ROUTES.HOME_ROUTE)
         elif (e.control.selected_index == 1):
-            router_model.active_route = router_model.SETTINGS_ROUTE
-        print("Selected destination:", e.control.selected_index)
+            route_to(ROUTES.BUNDLES_ROUTE)
+        elif (e.control.selected_index == 2):
+            route_to(ROUTES.SETTINGS_ROUTE)
 
-    @render
-    def update_route(self):
-        if (router_model.active_route == router_model.HOME_ROUTE):
+    def update_route(self, new_route):
+        if (new_route == ROUTES.HOME_ROUTE):
             self.page_container.content = ApplicationsPage()
-        elif (router_model.active_route == router_model.SETTINGS_ROUTE):
+        elif (new_route == ROUTES.SETTINGS_ROUTE):
             self.page_container.content = SettingsPage()
+        elif (new_route == ROUTES.BUNDLES_ROUTE):
+            self.page_container.content = BundlesPage()
         self.update()
 
     def did_mount(self):
-        self.update_route()
+        observe_route(self.update_route)
+        self.update_route(ROUTES.HOME_ROUTE)
 
     def build(self):
         self.page_container = ft.Container(
@@ -38,12 +45,18 @@ class NavDrawer(ft.UserControl):
             group_alignment=-0.9,
             destinations=[
                 ft.NavigationRailDestination(
-                    icon_content=ft.Container(
-                        ft.Text("Home", color=ft.colors.SECONDARY)),
-                    selected_icon_content=ft.Container(
-                        ft.Text("Home", color=ft.colors.PRIMARY, size=15))
+                    padding=10,
+                    icon = ft.icons.HOME,
+                    label_content=ft.Text("Home"),
                 ),
                 ft.NavigationRailDestination(
+                    padding=10,
+                    icon = ft.icons.ALL_INBOX_ROUNDED,
+                    label_content=ft.Text("Bundles"),
+
+                ),
+                ft.NavigationRailDestination(
+                    padding=10,
                     icon=ft.icons.SETTINGS_OUTLINED,
                     selected_icon_content=ft.Icon(ft.icons.SETTINGS),
                     label_content=ft.Text("Settings"),
@@ -70,8 +83,12 @@ def main(page: ft.Page):
     page.window_width = 1200
     page.window_height = 800
     page.padding = 0
-    page.window_resizable = True
+    page.window_resizable = False
+    page.window_maximizable = False
+
+    Global_Data_Fetching.get_bundles()
+
     page.add(NavDrawer())
 
 
-ft.app(target=main)
+ft.app(target=main, assets_dir="assets")

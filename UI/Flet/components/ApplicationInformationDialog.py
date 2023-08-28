@@ -1,8 +1,6 @@
 import flet as ft
 from DATA.commands import get_search_output, search, Search_Args, get_list_output, list_installed, List_Args, show, get_show_output, Show_Args
 import threading
-from mopyx import render, action
-from store import install_app_state
 from components.ApplicationsInstallDialog import application_install_dialog
 
 class ApplicationInformationDialog(ft.UserControl):
@@ -23,7 +21,7 @@ class ApplicationInformationDialog(ft.UserControl):
     def get_app_info(self):
         if self.is_fetch_running and not self.is_data_fetched:
             data = get_show_output(show(Show_Args(self.application_information["name"], self.application_information["id"], None, None, None)))
-            print("application info for: ", self.application_information["name"], data)
+            # print("application info for: ", self.application_information["name"], data)
             self.is_fetch_running = False
             self.is_data_fetched = True
             self.populate_dialog(data)

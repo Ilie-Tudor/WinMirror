@@ -1,10 +1,13 @@
 import flet as ft
-from DATA.commands import get_search_output, search, Search_Args, get_list_output, list_installed, List_Args, show, get_show_output, Show_Args
+from DATA.commands import get_list_output, list_installed, List_Args
 import threading
 import copy
 
 from components.SearchBox import SearchBox
 from components.ApplicationListItem import ApplicationListItem
+from components.ApplicationExporter import ApplicationExporter
+
+from store import set_installed_page_selected
 
 class InstalledApplicationList(ft.UserControl):
 
@@ -25,11 +28,12 @@ class InstalledApplicationList(ft.UserControl):
         if (self.is_search_running):
             data = get_list_output(
                 list_installed(List_Args(search_input, None, None, None, False, None)))
-            print(data)
+            # print(data)
+            # print("search_input", search_input)
+            if self.is_search_running:
+                self.populate_table(data)
+                callback()
             self.is_search_running = False
-            print("search_input", search_input)
-            self.populate_table(data)
-            callback()
 
     def enable_loading_indicator(self):
         self.list_view.controls.clear()
@@ -40,8 +44,16 @@ class InstalledApplicationList(ft.UserControl):
         self.list_view.controls.clear()
         for elem in data:
                 self.list_view.controls.append(
-                    ApplicationListItem(copy.deepcopy(elem)))
+                    ApplicationListItem(copy.deepcopy(elem), on_select=self.get_checked_applications))
         self.update()
+
+    def get_checked_applications(self):
+        apps = []
+        for item in self.list_view.controls:
+            if item.get_selection_state():
+                apps.append({"name": item.application_information["name"], "id": item.application_information["id"], "source": item.application_information["source"]})
+        set_installed_page_selected(apps)
+        print(apps)
 
     def build(self):
 
@@ -65,10 +77,12 @@ class InstalledApplicationList(ft.UserControl):
 
         self.search_field = SearchBox(on_click=self.on_search_submit, start_disabled=True, has_validation=False)
 
+        self.application_exporter = ApplicationExporter("installed_page_selected")
+
+
         return ft.Container(
             ft.Column([
-                self.search_field, 
+                ft.Row([self.search_field, self.application_exporter], alignment=ft.MainAxisAlignment.SPACE_BETWEEN), 
                 self.list_header, 
-
-                ft.Container(self.list_view, height=580, )])
+                ft.Container(self.list_view, height=580)])
         )

@@ -6,7 +6,9 @@ import copy
 from components.SearchBox import SearchBox
 from components.ApplicationListItem import ApplicationListItem
 from components.ApplicationsInstallDialog import application_install_dialog
+from components.ApplicationExporter import ApplicationExporter
 
+from store import set_discover_page_selected
 
 class DiscoverApplicationList(ft.UserControl):
 
@@ -27,9 +29,9 @@ class DiscoverApplicationList(ft.UserControl):
         if (self.is_search_running):
             data = get_search_output(
                 search(Search_Args(search_input, None, None, None, False)))
-            print(data)
+            # print(data)
             self.is_search_running = False
-            print("search_input", search_input)
+            # print("search_input", search_input)
             self.populate_table(data)
             callback()
 
@@ -42,8 +44,18 @@ class DiscoverApplicationList(ft.UserControl):
         self.list_view.controls.clear()
         for elem in data:
                 self.list_view.controls.append(
-                    ApplicationListItem(copy.deepcopy(elem), True))
+                    ApplicationListItem(copy.deepcopy(elem), True, self.get_checked_applications))
         self.update()
+
+    def get_checked_applications(self):
+        apps = []
+        for item in self.list_view.controls:
+            if item.get_selection_state():
+                apps.append({"name": item.application_information["name"], "id": item.application_information["id"], "source": "winget"})
+        set_discover_page_selected(apps)
+
+        
+
 
         
 
@@ -70,12 +82,12 @@ class DiscoverApplicationList(ft.UserControl):
 
         self.search_field = SearchBox( on_click=self.on_search_submit)
 
+        self.application_exporter = ApplicationExporter("discover_page_selected")
+
         return ft.Container(
             ft.Column([
-                self.application_install_dialog,
-                self.search_field, 
+                ft.Row([self.search_field, self.application_install_dialog, self.application_exporter], alignment=ft.MainAxisAlignment.SPACE_BETWEEN), 
                 self.list_header, 
-
                 ft.Container(self.list_view, height=580, )])
         )
     

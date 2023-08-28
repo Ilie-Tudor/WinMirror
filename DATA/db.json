@@ -1,1 +1,19 @@
-{"data": [{"title": "ceva", "apps": {"winget": [], "readonly": []}, "id": 275956796345591286}, {"title": "hello", "apps": {"winget": [], "readonly": []}, "id": 167500614294963424}]}
+{
+   "data": [
+      {
+         "title": "Test bundle",
+         "description": " ",
+         "apps": {
+            "winget": [
+               {
+                  "name": "7-Zip",
+                  "id": "7zip.7zip",
+                  "source": "winget"
+               }
+            ],
+            "readonly": []
+         },
+         "id": 275072554301385819
+      }
+   ]
+}

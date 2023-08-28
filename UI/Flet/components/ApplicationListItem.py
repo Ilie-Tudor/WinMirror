@@ -5,11 +5,14 @@ from functional import seq
 from components.ApplicationInformationDialog import ApplicationInformationDialog
 
 class ApplicationListItem(ft.UserControl):
-    def __init__(self, application_information: dict, has_dialog=False):
+    def __init__(self, application_information: dict, has_dialog=False, on_select = None):
         super().__init__()
         self.application_information = application_information
         self.information_dialog = ft.Text("")
         self.has_dialog = has_dialog
+        self.on_select = lambda: print("selected")
+        if on_select:
+            self.on_select = on_select
         if has_dialog:
             self.information_dialog = ApplicationInformationDialog(application_information)
 
@@ -20,7 +23,11 @@ class ApplicationListItem(ft.UserControl):
     def on_click(self, e):
         self.information_dialog.open_dialog()
 
+    def get_selection_state(self):
+        return self.checkbox.value
+
     def build(self):
+        self.checkbox = ft.Checkbox(value=False, on_change=lambda e: self.on_select())
         
         item_name = self.application_information["name"] if "name" in self.application_information else ""
         item_id = self.application_information["id"] if "id" in self.application_information else ""
@@ -30,7 +37,7 @@ class ApplicationListItem(ft.UserControl):
         self.container_control = ft.Container(
             ft.Row(
                 [
-                    ft.Container(content=ft.Checkbox(value=False)),
+                    ft.Container(content=self.checkbox),
                     ft.Container(on_click=self.on_click if self.has_dialog else None, width=300, content=ft.Text(
                         f"{item_name}")),
                     ft.Container(width=300, content=ft.Text(

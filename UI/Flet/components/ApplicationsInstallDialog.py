@@ -1,8 +1,6 @@
 import flet as ft
 from DATA.commands import Install_Args, install, get_install_output
 import threading
-from mopyx import render, action
-from store import install_app_state
 
 class ApplicationInstallDialog(ft.UserControl):
     def __init__(self):
@@ -21,7 +19,7 @@ class ApplicationInstallDialog(ft.UserControl):
                                                            id=self.application_information["id"], 
                                                            source="winget"
                                                            )))
-            print("application info for: ", self.application_information["name"], data)
+            # print("application info for: ", self.application_information["name"], data)
             self.is_fetch_running = False
             self.populate_dialog(data)
 

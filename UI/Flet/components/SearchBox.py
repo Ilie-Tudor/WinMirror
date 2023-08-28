@@ -24,7 +24,8 @@ class SearchBox(ft.UserControl):
         self.update()
 
     def on_click_fallback_handler(self, e):
-        print(self.search_field.value)
+        # print(self.search_field.value)
+        pass
 
     def set_search_error(self, value: str | None):
         self.search_field.error_text = value
