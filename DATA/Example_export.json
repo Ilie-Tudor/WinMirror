@@ -1,0 +1,18 @@
+{
+  "title": "Example Bundle 2",
+  "description": "This is an example bundle, to use for thesis",
+  "apps": {
+    "winget": [
+      {
+        "name": "CPUID CUP-Z",
+        "id": "CPUID.CPU-Z"
+      },
+      {
+        "name": "7-Zip",
+        "id": "7zip.7zip"
+      }
+    ],
+    "readonly": []
+  },
+  "id": 270819933874109389
+}

@@ -1,91 +1,40 @@
 {
    "data": [
       {
-         "title": "Test bundle",
-         "description": " ",
+         "title": "Example Bundle",
+         "description": "This is an example bundle, to use for thesis",
          "apps": {
             "winget": [
                {
-                  "name": "7-Zip",
-                  "id": "7zip.7zip",
-                  "source": "winget"
-               }
-            ],
-            "readonly": [
-               {
-                  "name": "Gwent",
-                  "id": "1971477531_is1"
-               }
-            ]
-         },
-         "id": 275072554301385819
-      },
-      {
-         "title": "ceva11111",
-         "description": "ceaf",
-         "apps": {
-            "winget": [
-               {
-                  "name": "Upgit",
-                  "id": "pluveto.Upgit"
-               }
-            ],
-            "readonly": []
-         },
-         "id": 134204343483686231
-      },
-      {
-         "title": "Test bundle2",
-         "description": " ",
-         "apps": {
-            "winget": [
-               {
-                  "name": "7-Zip",
-                  "id": "7zip.7zip",
-                  "source": "winget"
+                  "name": "CPUID CPU-Z",
+                  "id": "CPUID.CPU-Z"
                },
                {
-                  "name": "Upgit",
-                  "id": "pluveto.Upgit"
+                  "name": "7-Zip",
+                  "id": "7zip.7zip"
                }
             ],
-            "readonly": [
-               {
-                  "name": "Gwent",
-                  "id": "1971477531_is1"
-               }
-            ]
-         },
-         "id": 749453550292102585
-      },
-      {
-         "title": "ceva111112",
-         "description": "ceaf",
-         "apps": {
-            "winget": [],
             "readonly": []
          },
-         "id": 191428945156819993
+         "id": 270819933874109389
       },
       {
-         "title": "Test bundle3",
-         "description": " ",
+         "title": "Example Bundle 2",
+         "description": "This is an example bundle, to use for thesis",
          "apps": {
             "winget": [
                {
+                  "name": "CPUID CPU-Z",
+                  "id": "CPUID.CPU-Z"
+               },
+               {
                   "name": "7-Zip",
-                  "id": "7zip.7zip",
-                  "source": "winget"
+                  "id": "7zip.7zip"
                }
             ],
-            "readonly": [
-               {
-                  "name": "Gwent",
-                  "id": "1971477531_is1"
-               }
-            ]
+            "readonly": []
          },
-         "id": 261085889917318997
+         "id": 832612550633022767
       }
    ]
 }

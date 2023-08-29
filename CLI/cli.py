@@ -24,7 +24,7 @@ parser_search.add_argument(
     "--tag", type=str, help="Filter the search to include only apps with the specified tag on winget")
 parser_search.add_argument("-e", "--exact", action='store_true',
                            help="Uses the exact string in the query, case-sensitivity included")
-parser_search.set_defaults(func=lambda args: get_search_output(search(args)))
+parser_search.set_defaults(func=lambda args: json.dumps(get_search_output(search(args)), indent=4))
 
 # listing existing applications on winget
 parser_list = subparsers.add_parser("list", help="List the application that are installed on your system")
@@ -42,7 +42,7 @@ parser_list.add_argument("-e", "--exact", action='store_true',
                          help="Uses the exact string in the query, case-sensitivity included")
 parser_list.add_argument("--versions", action='store_true',
                          help="Shows the versions for the application")
-parser_list.set_defaults(func=lambda args: get_list_output(list_installed(args)))
+parser_list.set_defaults(func=lambda args: json.dumps(get_list_output(list_installed(args)), indent=4))
 
 # showing package info on winget
 parser_show = subparsers.add_parser("show", help="Show detailed information about a specific application. If the query isn't narrow enough to resolve to one app, then further filtering is necessary")
@@ -136,27 +136,27 @@ parser_get_bundles.set_defaults(func=lambda args: json.dumps(get_bundle(args), i
 
 # create bundle
 parser_create_bundles = bundle_subparsers.add_parser("create", help="Create a new bundle")
-parser_create_bundles.add_argument("-t", "--title", 
+parser_create_bundles.add_argument("-t", "--title", required=True,
                          help="The title of the new bundle")
-parser_create_bundles.add_argument("-d", "--description", 
+parser_create_bundles.add_argument("-d", "--description", required=True,
                          help="The description of the new bundle")
 parser_create_bundles.add_argument("-a", "--apps", type=json.loads,
                          help="Get all the bundles available")
-parser_create_bundles.set_defaults(func=create_bundle)
+parser_create_bundles.set_defaults(func=lambda args: json.dumps(create_bundle(args),indent=4))
 
 
 # delete bundle
 parser_delete_bundles = bundle_subparsers.add_parser("delete", help="Delete a bundle")
-parser_delete_bundles.add_argument("-i", "--id", type=int,
+parser_delete_bundles.add_argument("-i", "--id", type=int, required=True,
                          help="The id of the bundle")
 parser_delete_bundles.set_defaults(func=delete_bundle)
 
 
 # update bundle title
 parser_update_bundle_title = bundle_subparsers.add_parser("title", help="Update the title of a bundle")
-parser_update_bundle_title.add_argument("-i", "--id", type=int,
+parser_update_bundle_title.add_argument("-i", "--id", type=int, required=True,
                          help="The id of the bundle")
-parser_update_bundle_title.add_argument("-t", "--title",
+parser_update_bundle_title.add_argument("-t", "--title", required=True,
                          help="The new title for the specified bundle")
 parser_update_bundle_title.set_defaults(func=update_bundle_title)
 
@@ -177,45 +177,45 @@ parser_add_to_bundle = bundle_subparsers.add_parser("add",
                                                     }
                                                     
                                                     """)
-parser_add_to_bundle.add_argument("-b", "--bundle-id", type=int,
+parser_add_to_bundle.add_argument("-b", "--bundle-id", type=int, required=True,
                          help="The id of the bundle")
-parser_add_to_bundle.add_argument("-t", "--type", 
+parser_add_to_bundle.add_argument("-t", "--type", required=True,
                          help="The type of the application (winget/readonly)")
-parser_add_to_bundle.add_argument("-a", "--app", type=json.loads,
+parser_add_to_bundle.add_argument("-a", "--app", type=json.loads, required=True,
                          help="The content of the application to add")
-parser_add_to_bundle.set_defaults(func=add_application_to_bundle)
+parser_add_to_bundle.set_defaults(func=lambda args: json.dumps(add_application_to_bundle(args),indent=4))
 
 
 # remove application from bundle
 parser_remove_from_bundle = bundle_subparsers.add_parser("remove", help="Remove application from bundle")
-parser_remove_from_bundle.add_argument("-b", "--bundle-id", type=int,
+parser_remove_from_bundle.add_argument("-b", "--bundle-id", type=int, required=True,
                          help="The id of the bundle")
-parser_remove_from_bundle.add_argument("-t", "--type", 
+parser_remove_from_bundle.add_argument("-t", "--type", required=True,
                          help="The type of the application (winget/readonly)")
-parser_remove_from_bundle.add_argument("-i", "--id",
+parser_remove_from_bundle.add_argument("-i", "--id", required=True,
                          help="The id of the application to remove")
 parser_remove_from_bundle.set_defaults(func=lambda args: json.dumps(remove_application_from_bundle(args), indent=4))
 
 
 # export bundle
 parser_export_bundle = bundle_subparsers.add_parser("export", help="Export a bundle")
-parser_export_bundle.add_argument("-i", "--id", type=int,
+parser_export_bundle.add_argument("-i", "--id", type=int, required=True,
                          help="The id of the bundle")
-parser_export_bundle.add_argument("-o", "--output", 
+parser_export_bundle.add_argument("-o", "--output", required=True,
                          help="The path to the file in which to export")
 parser_export_bundle.set_defaults(func=export_bundle)
 
 
 # import bundle
 parser_import_bundle = bundle_subparsers.add_parser("import", help="Import a bundle")
-parser_import_bundle.add_argument("-f", "--file",
+parser_import_bundle.add_argument("-f", "--file", required=True,
                          help="The file containing the bundle")
 parser_import_bundle.set_defaults(func=import_bundle)
 
 
 # bundle install
 parser_install_bundle = bundle_subparsers.add_parser("install", help="Bulk install all the applications from a bundle")
-parser_install_bundle.add_argument("-b", "--bundle-id",
+parser_install_bundle.add_argument("-b", "--bundle-id", required=True,
                          help="The id of the bundle to bulk install")
 parser_install_bundle.set_defaults(func=bundle_install)
 

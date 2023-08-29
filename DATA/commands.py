@@ -302,10 +302,10 @@ def uninstall(args):
         options += " --preserve "
     if args.purge and not args.preserve:
         options += " --purge "
-    # print(options)
     subproc = subprocess.run(
         options.strip(), capture_output=True, shell=True)
-    print("output: ", subproc.stdout.decode())
+    # print("output: ", subproc.stdout.decode())
+    return subproc.stdout.decode()
 
 class Uninstaller_Args:
     def __init__(self, uninstall_query, id=None, name=None, tag=None,
@@ -391,7 +391,7 @@ def export_bundle(args):
         output_file = open(args.output, "w")
         output_file.write(content)
         output_file.close
-        return {"status": "success", "message": "Operation completed successfully", "result": json.loads(content)}
+        return {"status": "success", "message": "Operation completed successfully", "result": args.output}
 
 class Export_Bundle_Args:
     def __init__(self, output: str, id) -> None:
@@ -420,8 +420,12 @@ def bundle_install(args):
     bundles = db.get_bundle_by_id(args.bundle_id)
     winget_apps = bundles["apps"]["winget"]
     for app in winget_apps:
-        print(install(Install_Args(app["name"],app["id"],source=app["source"])))
+        print(install(Install_Args(app["name"],app["id"],source="winget")))
+        print("########")
         print(f'{app["name"]} ({app["id"]}) installed')
+        print("########")
+
+
 
 class Bundle_Install_Args:
     def __init__(self, bundle_id = None) -> None:
