@@ -40,6 +40,10 @@
                {
                   "name": "Streamlink",
                   "id": "Streamlink.Streamlink"
+               },
+               {
+                  "name": "Microsoft Visual Studio Code (User)",
+                  "id": "Microsoft.VisualStudioCode"
                }
             ],
             "readonly": [
@@ -50,24 +54,6 @@
             ]
          },
          "id": 270819933874109389
-      },
-      {
-         "title": "Test_bundle",
-         "description": "Bundle for testing ",
-         "apps": {
-            "winget": [
-               {
-                  "name": "CPUID CPU-Z",
-                  "id": "CPUID.CPU-Z"
-               },
-               {
-                  "name": "CPUID HWMonitor",
-                  "id": "CPUID.HWMonitor"
-               }
-            ],
-            "readonly": []
-         },
-         "id": 125497753906474006
       }
    ]
 }

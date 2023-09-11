@@ -255,15 +255,18 @@ def get_install_output(output_string: str):
     if is_error(output_string):
         return get_error_message(output_string)
 
-    lines = output_string.split("\n")
+    lines = re.split("\n",output_string)
 
     # this line here is needed for the case in which winget cannot search in a certain source
     lines = list(
         filter(lambda e: 'Failed when searching source' not in e, lines))
     # ---------------------------------------------------------------------------------------
-
     
-    cleaned_lines =  seq(lines).map(lambda line: re.sub(r"^[^a-zA-Z0-9{}[\]]+|[^a-zA-Z0-9{}[\]]+$", "", line)).to_list()
+    cleaned_lines =  seq(lines)\
+                            .map(lambda line: re.sub(r"^[^a-zA-Z0-9{}[\]]+|[^a-zA-Z0-9{}[\]]+$", "", line))\
+                            .filter(lambda line: '▒' not in line)\
+                            .filter(lambda line: '█' not in line)\
+                            .to_list()
 
     return "\n".join(cleaned_lines)
 
