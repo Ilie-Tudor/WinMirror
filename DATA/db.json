@@ -54,6 +54,29 @@
             ]
          },
          "id": 270819933874109389
+      },
+      {
+         "title": "Example_bundle_2",
+         "description": "This is an example for demo. ",
+         "apps": {
+            "winget": [
+               {
+                  "name": "CPUID CPU-Z",
+                  "id": "CPUID.CPU-Z"
+               },
+               {
+                  "name": "CPUID HWMonitor",
+                  "id": "CPUID.HWMonitor"
+               }
+            ],
+            "readonly": [
+               {
+                  "name": "App Installer",
+                  "id": "Microsoft.DesktopAppInstaller_8wekyb3d8bbwe"
+               }
+            ]
+         },
+         "id": 159296111475236248
       }
    ]
 }

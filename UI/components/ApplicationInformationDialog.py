@@ -29,7 +29,6 @@ class ApplicationInformationDialog(ft.UserControl):
 
     def populate_dialog(self, content: list[str]):
 
-        # self.main_container.content = ft.Text(content)
         self.main_container.content = ft.ListView(controls=list(map(lambda line: ft.Text(line), content)))
         
         self.update()
@@ -77,7 +76,7 @@ class ApplicationInformationDialog(ft.UserControl):
         self.main_container = ft.Container(
             ft.ProgressRing(width=20, height=20, stroke_width=2),  alignment=ft.Alignment(0, 0),
             height=600,
-            width=600,
+            width=650,
             )
         
         self.title = ft.Container(ft.Text("Application details"))

@@ -218,7 +218,7 @@ def get_show_output(output_string: str):
     lines = list(
         filter(lambda e: 'Failed when searching source' not in e, lines))
     # ---------------------------------------------------------------------------------------
-
+    lines[0] = re.sub(r"\s{2}","",lines[0])
     return lines
 
 
