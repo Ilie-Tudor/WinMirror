@@ -5,7 +5,6 @@ import copy
 
 from components.SearchBox import SearchBox
 from components.ApplicationListItem import ApplicationListItem
-from components.ApplicationsInstallDialog import application_install_dialog
 from components.ApplicationExporter import ApplicationExporter
 
 from store import set_discover_page_selected
@@ -29,9 +28,7 @@ class DiscoverApplicationList(ft.UserControl):
         if (self.is_search_running):
             data = get_search_output(
                 search(Search_Args(search_input, None, None, None, False)))
-            # print(data)
             self.is_search_running = False
-            # print("search_input", search_input)
             self.populate_table(data)
             callback()
 
@@ -60,7 +57,6 @@ class DiscoverApplicationList(ft.UserControl):
         
 
     def build(self):
-        self.application_install_dialog = application_install_dialog
 
         self.list_header = ft.ListView(
             controls=[ft.Row(
@@ -86,7 +82,7 @@ class DiscoverApplicationList(ft.UserControl):
 
         return ft.Container(
             ft.Column([
-                ft.Row([self.search_field, self.application_install_dialog, self.application_exporter], alignment=ft.MainAxisAlignment.SPACE_BETWEEN), 
+                ft.Row([self.search_field, self.application_exporter], alignment=ft.MainAxisAlignment.SPACE_BETWEEN), 
                 self.list_header, 
                 ft.Container(self.list_view, height=580, )])
         )

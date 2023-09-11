@@ -6,6 +6,7 @@ import copy
 from components.SearchBox import SearchBox
 from components.ApplicationListItem import ApplicationListItem
 from components.ApplicationExporter import ApplicationExporter
+from components.UninstallModal import UninstallModal
 
 from store import set_installed_page_selected
 
@@ -28,8 +29,6 @@ class InstalledApplicationList(ft.UserControl):
         if (self.is_search_running):
             data = get_list_output(
                 list_installed(List_Args(search_input, None, None, None, False, None)))
-            # print(data)
-            # print("search_input", search_input)
             if self.is_search_running:
                 self.populate_table(data)
                 callback()
@@ -53,7 +52,6 @@ class InstalledApplicationList(ft.UserControl):
             if item.get_selection_state():
                 apps.append({"name": item.application_information["name"], "id": item.application_information["id"], "source": item.application_information["source"]})
         set_installed_page_selected(apps)
-        print(apps)
 
     def build(self):
 
@@ -79,10 +77,12 @@ class InstalledApplicationList(ft.UserControl):
 
         self.application_exporter = ApplicationExporter("installed_page_selected")
 
+        self.uninstall_modal = UninstallModal()
+
 
         return ft.Container(
             ft.Column([
-                ft.Row([self.search_field, self.application_exporter], alignment=ft.MainAxisAlignment.SPACE_BETWEEN), 
+                ft.Row([self.search_field, ft.Row([self.uninstall_modal, self.application_exporter])], alignment=ft.MainAxisAlignment.SPACE_BETWEEN), 
                 self.list_header, 
                 ft.Container(self.list_view, height=580)])
         )

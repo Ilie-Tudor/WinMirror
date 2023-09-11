@@ -12,6 +12,34 @@
                {
                   "name": "7-Zip",
                   "id": "7zip.7zip"
+               },
+               {
+                  "name": "MrCode",
+                  "id": "zokugun.MrCode"
+               },
+               {
+                  "name": "VSCodium",
+                  "id": "VSCodium.VSCodium"
+               },
+               {
+                  "name": "TheiaBlueprint",
+                  "id": "EclipseFoundation.TheiaBlueprint"
+               },
+               {
+                  "name": "Huawei Quick App IDE",
+                  "id": "Huawei.QuickAppIde"
+               },
+               {
+                  "name": "Microsoft Visual Studio Code Insiders",
+                  "id": "Microsoft.VisualStudioCode.Insiders"
+               },
+               {
+                  "name": "VLC media player",
+                  "id": "VideoLAN.VLC"
+               },
+               {
+                  "name": "Streamlink",
+                  "id": "Streamlink.Streamlink"
                }
             ],
             "readonly": []
@@ -32,9 +60,32 @@
                   "id": "7zip.7zip"
                }
             ],
-            "readonly": []
+            "readonly": [
+               {
+                  "name": "Heroes of Might and Magic 3 Complete",
+                  "id": "1207658787_is1"
+               }
+            ]
          },
          "id": 832612550633022767
+      },
+      {
+         "title": "Test_Bundle",
+         "description": "Some testing done for bulk install",
+         "apps": {
+            "winget": [
+               {
+                  "name": "CPUID CPU-Z",
+                  "id": "CPUID.CPU-Z"
+               },
+               {
+                  "name": "CPUID HWMonitor",
+                  "id": "CPUID.HWMonitor"
+               }
+            ],
+            "readonly": []
+         },
+         "id": 331190540544756829
       }
    ]
 }

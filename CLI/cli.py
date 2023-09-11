@@ -1,6 +1,5 @@
 from DATA.commands import *
 import argparse
-import subprocess
 import sys
 import json
 sys.path.insert(1, '../')
@@ -14,7 +13,7 @@ subparsers = parser.add_subparsers(help='sub-command help')
 
 # searching for packages on winget
 parser_search = subparsers.add_parser("search", help="Search for applications using winget utility")
-parser_search.add_argument("search_query", type=str,
+parser_search.add_argument("search_query", type=str, nargs='?', default=None,
                            help="The query used to search for the specific application")
 parser_search.add_argument(
     "--id", type=str, help="Filter the search to include only apps with the specified id on winget")
@@ -25,6 +24,7 @@ parser_search.add_argument(
 parser_search.add_argument("-e", "--exact", action='store_true',
                            help="Uses the exact string in the query, case-sensitivity included")
 parser_search.set_defaults(func=lambda args: json.dumps(get_search_output(search(args)), indent=4))
+
 
 # listing existing applications on winget
 parser_list = subparsers.add_parser("list", help="List the application that are installed on your system")
@@ -44,6 +44,7 @@ parser_list.add_argument("--versions", action='store_true',
                          help="Shows the versions for the application")
 parser_list.set_defaults(func=lambda args: json.dumps(get_list_output(list_installed(args)), indent=4))
 
+
 # showing package info on winget
 parser_show = subparsers.add_parser("show", help="Show detailed information about a specific application. If the query isn't narrow enough to resolve to one app, then further filtering is necessary")
 parser_show.add_argument("show_query", type=str, nargs='?', default=None,
@@ -60,9 +61,10 @@ parser_show.add_argument("--versions", action='store_true',
                          help="Shows the versions for the application")
 parser_show.set_defaults(func=lambda args: get_show_output(show(args)))
 
+
 # installing a package with winget
 parser_install = subparsers.add_parser("install", help="Install a specific application found on winget")
-parser_install.add_argument("install_query", type=str,
+parser_install.add_argument("install_query", type=str, nargs='?', default=None,
                          help="The query used to search for the specific application")
 parser_install.add_argument(
     "--id", type=str, help="Filter include only apps with the specified id on winget")
@@ -95,7 +97,7 @@ parser_install.set_defaults(func=install)
 
 # uninstalling a package with winget
 parser_uninstall = subparsers.add_parser("uninstall", help="Uninstall an existing application from your sistem")
-parser_uninstall.add_argument("uninstall_query", type=str,
+parser_uninstall.add_argument("uninstall_query", type=str, nargs='?', default=None,
                          help="The query used to search for the specific application")
 parser_uninstall.add_argument(
     "--id", type=str, help="Filter include only apps with the specified id on winget")
@@ -118,10 +120,15 @@ parser_uninstall.add_argument("--preserve", action='store_true',
 parser_uninstall.set_defaults(func=uninstall)
 
 
+# getting information about winget
+parser_uninstall = subparsers.add_parser("info", help="Uninstall an existing application from your sistem")
+parser_uninstall.set_defaults(func=info)
+
 
 # bundle management
 parser_bundle = subparsers.add_parser("bundle", help="Bundle management commands group. A bundle is a colection of application that cand be bulk installed and exported")
 bundle_subparsers = parser_bundle.add_subparsers(help="Manage bundles of application to bulk install, export, add, etc. winget applications")
+
 
 # get bundle
 parser_get_bundles = bundle_subparsers.add_parser("get", help="Get bundles information")
@@ -222,4 +229,4 @@ parser_install_bundle.set_defaults(func=bundle_install)
 
 
 args = parser.parse_args()
-print(args.func(args))
+args.func(args)

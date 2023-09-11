@@ -2,10 +2,32 @@ import subprocess
 import re
 import os
 import json
+from functional import seq
 import DATA.db_controller as db
+
+
+ERROR_PREFIX = "__error__"
+
+def new_error(message: str):
+    return ERROR_PREFIX+message
+
+def has_one_ore_more_occurences(*value_list):
+    for val in value_list:
+        if val is not None:
+            return True
+    return False
+
+def is_error(input: str):
+    return ERROR_PREFIX in input
+
+def get_error_message(input: str):
+    return input.replace(ERROR_PREFIX, "")
 
 # listing/searching for packages on winget
 def get_search_output(output_string: str):
+    if is_error(output_string):
+        return get_error_message(output_string)
+    
     lines = output_string.split("\n")
 
     # this line here is needed for the case in which winget cannot search in a certain source
@@ -65,6 +87,9 @@ def get_search_output(output_string: str):
     return packages_list
 
 def get_list_output(output_string: str):
+    if is_error(output_string):
+        return get_error_message(output_string)
+    
     lines = output_string.split("\n")
 
     # this line here is needed for the case in which winget cannot search in a certain source
@@ -121,6 +146,7 @@ def get_list_output(output_string: str):
             package["source"] = line[source_column_bounds[0]:source_column_bounds[1]].strip()
         packages_list.append(package)
     # print(json.dumps(packages_list, indent=4))
+
     return packages_list
 
 
@@ -133,7 +159,7 @@ class Search_Args:
         self.exact = exact
 
 class List_Args:
-    def __init__(self, list_query, id, name, tag, exact, scope) -> None:
+    def __init__(self, list_query=None, id=None, name=None, tag=None, exact=False, scope=None) -> None:
         self.list_query = list_query
         self.id = id
         self.name = name
@@ -143,7 +169,11 @@ class List_Args:
 
 
 def search(args):
-    options = "winget search " + "\"" + args.search_query + "\"" + " "
+    if not has_one_ore_more_occurences(args.search_query, args.id, args.name, args.tag):
+        return new_error("Please specify a query")
+    options = "winget search " 
+    if args.search_query is not None:
+        options += "\"" + args.search_query + "\"" + " "
     if args.id:
         options += " --id " + args.id + " "
     if args.name:
@@ -179,6 +209,9 @@ def list_installed(args):
 
 # showing package information on winget
 def get_show_output(output_string: str):
+    if is_error(output_string):
+        return get_error_message(output_string)
+
     lines = output_string.split("\n")
 
     # this line here is needed for the case in which winget cannot search in a certain source
@@ -190,6 +223,8 @@ def get_show_output(output_string: str):
 
 
 def show(args):
+    if not has_one_ore_more_occurences(args.show_query, args.id, args.name, args.tag):
+        return new_error("Please specify a query")
     options = "winget show " 
     if args.show_query:
         options += "\"" + args.show_query + "\"" + " "
@@ -207,7 +242,7 @@ def show(args):
     return subproc.stdout.decode()
 
 class Show_Args:
-    def __init__(self, show_query, id, name, tag, exact) -> None:
+    def __init__(self=None, show_query=None, id=None, name=None, tag=None, exact=None) -> None:
         self.show_query = show_query
         self.id = id
         self.name = name
@@ -217,6 +252,9 @@ class Show_Args:
 
 # installing a package with winget
 def get_install_output(output_string: str):
+    if is_error(output_string):
+        return get_error_message(output_string)
+
     lines = output_string.split("\n")
 
     # this line here is needed for the case in which winget cannot search in a certain source
@@ -224,11 +262,18 @@ def get_install_output(output_string: str):
         filter(lambda e: 'Failed when searching source' not in e, lines))
     # ---------------------------------------------------------------------------------------
 
-    return lines
+    pattern = r'[^a-zA-Z0-9\s]'
+    
+    cleaned_lines =  seq(lines).map(lambda line: re.sub(r"^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$", "", line)).to_list()
+
+    return "\n".join(cleaned_lines)
 
 def install(args):
-    options = "winget install --accept-source-agreements --accept-package-agreements " + \
-        "\"" + args.install_query + "\"" + " "
+    if not has_one_ore_more_occurences(args.install_query, args.id, args.name, args.tag):
+        return new_error("Please specify a query")
+    options = "winget install --accept-source-agreements --accept-package-agreements "
+    if args.install_query is not None:
+        options += "\"" + args.install_query + "\"" + " "
     if args.id:
         options += " --id " + args.id + " "
     if args.name:
@@ -261,7 +306,7 @@ def install(args):
     return subproc.stdout.decode()
 
 class Install_Args:
-    def __init__(self, install_query, id=None, name=None, tag=None, exact=False, version=None,
+    def __init__(self, install_query=None, id=None, name=None, tag=None, exact=False, version=None,
                  scope=None, source=None, arhitecture=None, interactive=False, silent=False,
                  override=None, disable_interactivity=False, location=None):
         self.install_query = install_query
@@ -282,8 +327,11 @@ class Install_Args:
 
 # uninstalling a package with winget
 def uninstall(args):
-    options = "winget uninstall --accept-source-agreements " + \
-        "\"" + args.uninstall_query + "\"" + " "
+    if not has_one_ore_more_occurences(args.uninstall_query, args.id, args.name, args.tag):
+        return new_error("Please specify a query")
+    options = "winget uninstall --accept-source-agreements " 
+    if args.uninstall_query:
+        options += "\"" + args.uninstall_query + "\"" + " "
     if args.id:
         options += " --id " + args.id + " "
     if args.name:
@@ -307,8 +355,8 @@ def uninstall(args):
     # print("output: ", subproc.stdout.decode())
     return subproc.stdout.decode()
 
-class Uninstaller_Args:
-    def __init__(self, uninstall_query, id=None, name=None, tag=None,
+class Uninstall_Args:
+    def __init__(self, uninstall_query=None, id=None, name=None, tag=None,
                  exact=False, version=None, interactive=False,
                  silent=False, preserve=False, purge=False):
         self.uninstall_query = uninstall_query
@@ -321,6 +369,14 @@ class Uninstaller_Args:
         self.silent = silent
         self.preserve = preserve
         self.purge = purge
+
+# getting winget information
+def info(args):
+    options = "winget --info" 
+    subproc = subprocess.run(
+        options.strip(), capture_output=True, shell=True)
+    # print("output: ", subproc.stdout.decode())
+    return subproc.stdout.decode()
 
 # getting bundles info
 def get_bundle(args):
@@ -364,7 +420,7 @@ def update_bundle_title(args):
     if args.id and args.title:
         return db.update_bundle_title(args.id, args.title)
     
-# adding applications to bundle
+# adding application to bundle
 def add_application_to_bundle(args):
     if args.bundle_id and args.type and args.app:
         return db.add_app_to_bundle(args.bundle_id,args.type,args.app)
@@ -375,7 +431,7 @@ class Add_Application_To_Bundle_Args:
         self.type = type
         self.app = app
 
-# removing applications from bundle
+# removing application from bundle
 def remove_application_from_bundle(args):
     if args.bundle_id and args.type and args.id:
         return db.remove_app_from_bundle(args.bundle_id, args.type, args.id)

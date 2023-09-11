@@ -111,5 +111,4 @@ def observe_installed_page_selected(action, prec_check = True):
 
 # create store
 store = pydux.create_store(pydux.combine_reducers({"route": route, "bundles": bundles, "discover_page_selected": discover_page_selected, "installed_page_selected": installed_page_selected}))
-store.subscribe(lambda: print("route", store.get_state()["route"]))
 

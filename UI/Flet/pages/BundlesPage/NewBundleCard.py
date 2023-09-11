@@ -48,6 +48,8 @@ class NewBundleDialog(ft.UserControl):
 
         self.description_field = ft.TextField(label="Description",border_color=ft.colors.PRIMARY, 
                 label_style=ft.TextStyle(color=ft.colors.SECONDARY),
+                multiline=True,
+                min_lines=3,
                 dense=True)
 
         self.add_button = ft.ElevatedButton(text = "Add Bundle", on_click=lambda e: self.on_add())
@@ -55,11 +57,11 @@ class NewBundleDialog(ft.UserControl):
         self.cancel_button = ft.TextButton("Cancel", on_click=lambda e:self.close_dialog())
 
         self.modal = ft.AlertDialog(
-            content = ft.Container(ft.Column([
+            content = ft.Container(ft.ListView([
                 self.title_field,
                 self.description_field,
                 self.error_message,
-            ]), width=300, height=200), actions=[self.add_button,self.cancel_button], actions_alignment=ft.MainAxisAlignment.END
+            ],spacing=10), width=300, height=200), actions=[self.add_button,self.cancel_button], actions_alignment=ft.MainAxisAlignment.END
         )
 
         return self.modal

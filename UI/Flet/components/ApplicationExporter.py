@@ -51,6 +51,7 @@ class ApplicationExporter(ft.UserControl):
         self.th.start()
         
     def on_export(self):
+        unsuccessful_ids = []
         for app in self.app_list:
             app_content = { key:val
                             for key, val
@@ -61,10 +62,12 @@ class ApplicationExporter(ft.UserControl):
                 "winget" if app["source"] != "" else "readonly",
                 app_content
                 ))
-            if(data["status"]=="success"):
-                self.toast.open("Apps added to bunddle!")
-            else:
-                self.toast.open(data["message"], variant="error")
+            if(not data["status"]=="success"):
+                unsuccessful_ids.append(app["id"])
+        if len(unsuccessful_ids)!=0:
+            self.toast.open(f'The following apps couldn\'t be added {unsuccessful_ids}', variant="error")
+        else:
+            self.toast.open("Apps added to bunddle!")
         Global_Data_Fetching.get_bundles()
 
 

@@ -3,6 +3,7 @@ from DATA.commands import delete_bundle, Delete_Args, get_bundle, Get_Bundle_Arg
 import threading
 from store import set_bundles
 from components.Toast import Toast
+from pages.BundlesPage.BundleInfo import BundleInfo
 
 
 class DeleteConfirmation(ft.UserControl):
@@ -69,12 +70,9 @@ class BundleCard(ft.UserControl):
                 set_bundles(bundles)
             else: 
                 pass        
-    
-    def on_export(self, result):
-        print(result.path, self.bundle_info["id"])
 
     def on_export(self, result):
-        if result is not None:
+        if result.path is not None:
             self.import_th = threading.Thread(
                 target=self.export_bundle, args=(result.path,), daemon=True)
             self.import_th.start()
@@ -116,9 +114,11 @@ class BundleCard(ft.UserControl):
             on_reject=lambda: self.delte_confirmation_modal.close_dialog(),
         )
 
+        self.bundle_info_modal = BundleInfo(self.bundle_info["id"])
+
         self.content = ft.Column(
             controls=[
-                ft.Row([self.title_box, self.export_picker, self.toast]),
+                ft.Row([self.title_box, self.export_picker, self.bundle_info_modal, self.toast]),
                 ft.Divider(color=ft.colors.PRIMARY, height=4),
                 ft.ListView(controls = [
                         self.description_box,
@@ -137,7 +137,7 @@ class BundleCard(ft.UserControl):
             content=ft.Container(
                     content = self.content,
                     padding= ft.padding.all(10)
-                )
+                , on_click=lambda e: self.bundle_info_modal.open_dialog())
         )
 
         return self.card
