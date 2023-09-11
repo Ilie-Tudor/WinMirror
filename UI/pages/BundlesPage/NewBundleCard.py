@@ -27,7 +27,7 @@ class NewBundleDialog(ft.UserControl):
         self.update()
     
     def create_new_bundle(self):
-        data = create_bundle(Create_Bundle_Args(self.title_field.value, self.description_field.value))
+        data = create_bundle(Create_Bundle_Args(self.title_field.value, self.description_field.value+" "))
         if data["status"] == "success":
             self.clear_error()
             bundles = get_bundle(Get_Bundle_Args(all=True))

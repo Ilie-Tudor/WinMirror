@@ -262,9 +262,8 @@ def get_install_output(output_string: str):
         filter(lambda e: 'Failed when searching source' not in e, lines))
     # ---------------------------------------------------------------------------------------
 
-    pattern = r'[^a-zA-Z0-9\s]'
     
-    cleaned_lines =  seq(lines).map(lambda line: re.sub(r"^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$", "", line)).to_list()
+    cleaned_lines =  seq(lines).map(lambda line: re.sub(r"^[^a-zA-Z0-9{}[\]]+|[^a-zA-Z0-9{}[\]]+$", "", line)).to_list()
 
     return "\n".join(cleaned_lines)
 

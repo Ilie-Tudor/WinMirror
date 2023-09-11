@@ -65,7 +65,7 @@ class ApplicationInformationDialog(ft.UserControl):
 
     def install(self):
         if self.installing:
-            data = get_install_output(install(Install_Args(id=self.application_information["id"], source="winget")))
+            data = get_install_output(install(Install_Args(id=self.application_information["id"], source=self.application_information["source"])))
             self.install_dialog.open_modal(data)
             self.reset_install_visual_indicator()
 

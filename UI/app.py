@@ -79,12 +79,14 @@ class NavDrawer(ft.UserControl):
 
 
 def main(page: ft.Page):
+    page.theme_mode = "dark"
+    page.theme = ft.theme.Theme(color_scheme_seed='blue')
     page.title = "WinMirror"
     page.window_width = 1200
     page.window_height = 800
     page.padding = 0
     page.window_resizable = True
-    # page.window_resizable = False # to be activated when building the app 
+    page.window_resizable = False # to be activated when building the app 
     page.window_maximizable = False
 
     Global_Data_Fetching.get_bundles()

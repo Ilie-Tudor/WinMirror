@@ -4,14 +4,15 @@ import threading
 from store import set_bundles
 from components.Toast import Toast
 from pages.BundlesPage.BundleInfo import BundleInfo
-
+import time
 
 class DeleteConfirmation(ft.UserControl):
 
-    def __init__(self, on_confirm, on_reject):
+    def __init__(self, on_confirm, on_reject, bundle_name):
         super().__init__()
         self.on_confirm = on_confirm
         self.on_reject = on_reject
+        self.bundle_name = bundle_name
 
     def will_unmount(self):
         self.close_dialog()
@@ -25,7 +26,7 @@ class DeleteConfirmation(ft.UserControl):
         self.update()
 
     def build(self):
-        self.text = ft.Text("Are you sure you want to delete this bundle?")
+        self.text = ft.Text(f"Are you sure you want to delete the bundle '{self.bundle_name}'?")
         self.action_buttons = [
             ft.TextButton("Yes", on_click = lambda e: self.on_confirm()),
             ft.TextButton("No", on_click = lambda e: self.on_reject())
@@ -67,6 +68,9 @@ class BundleCard(ft.UserControl):
             data = delete_bundle(Delete_Args(self.bundle_info["id"]))
             if data["status"] == "success":
                 bundles = get_bundle(Get_Bundle_Args(all=True))
+                self.delte_confirmation_modal.close_dialog()
+                # this time.sleep solves a bug with the modal not closing when deleting element, must investigate
+                time.sleep(0.2)
                 set_bundles(bundles)
             else: 
                 pass        
@@ -112,6 +116,7 @@ class BundleCard(ft.UserControl):
         self.delte_confirmation_modal = DeleteConfirmation(
             on_confirm=lambda: self.on_delete(),
             on_reject=lambda: self.delte_confirmation_modal.close_dialog(),
+            bundle_name=self.bundle_info["title"]
         )
 
         self.bundle_info_modal = BundleInfo(self.bundle_info["id"])

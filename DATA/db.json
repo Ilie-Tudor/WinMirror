@@ -42,36 +42,18 @@
                   "id": "Streamlink.Streamlink"
                }
             ],
-            "readonly": []
+            "readonly": [
+               {
+                  "name": "Google Drive",
+                  "id": "4dfad32835b6aa3aac29ffdabda24011"
+               }
+            ]
          },
          "id": 270819933874109389
       },
       {
-         "title": "Example Bundle 2",
-         "description": "This is an example bundle, to use for thesis",
-         "apps": {
-            "winget": [
-               {
-                  "name": "CPUID CPU-Z",
-                  "id": "CPUID.CPU-Z"
-               },
-               {
-                  "name": "7-Zip",
-                  "id": "7zip.7zip"
-               }
-            ],
-            "readonly": [
-               {
-                  "name": "Heroes of Might and Magic 3 Complete",
-                  "id": "1207658787_is1"
-               }
-            ]
-         },
-         "id": 832612550633022767
-      },
-      {
-         "title": "Test_Bundle",
-         "description": "Some testing done for bulk install",
+         "title": "Test_bundle",
+         "description": "Bundle for testing ",
          "apps": {
             "winget": [
                {
@@ -85,7 +67,7 @@
             ],
             "readonly": []
          },
-         "id": 331190540544756829
+         "id": 125497753906474006
       }
    ]
 }
