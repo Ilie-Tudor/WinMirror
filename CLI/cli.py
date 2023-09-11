@@ -59,7 +59,7 @@ parser_show.add_argument("-e", "--exact", action='store_true',
                          help="Uses the exact string in the query, case-sensitivity included")
 parser_show.add_argument("--versions", action='store_true',
                          help="Shows the versions for the application")
-parser_show.set_defaults(func=lambda args: get_show_output(show(args)))
+parser_show.set_defaults(func=lambda args: "\n".join(get_show_output(show(args))))
 
 
 # installing a package with winget
@@ -229,4 +229,7 @@ parser_install_bundle.set_defaults(func=bundle_install)
 
 
 args = parser.parse_args()
-args.func(args)
+if hasattr(args, "func"):
+    print(args.func(args))
+else:
+    parser.print_help()
